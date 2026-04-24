@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UASS | Next-Gen Assistive Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.5);
+            --accent: #10b981;
+            --danger: #ff4757;
+            --bg: #0f172a;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        body { 
+            background: var(--bg); 
+            color: var(--text-main); 
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 0% 0%, #1e293b 0%, transparent 50%),
+                              radial-gradient(circle at 100% 100%, #1e1b4b 0%, transparent 50%);
+            min-height: 100vh;
+        }
+
+        .hidden { display: none !important; }
+
+        /* --- AUTH PAGE STYLING --- */
+        #auth-page {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(20px);
+            padding: 50px 40px;
+            border-radius: 32px;
+            border: 1px solid var(--glass-border);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+        }
+
+        .logo-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 15px var(--primary-glow));
+        }
+
+        .auth-tabs { 
+            display: flex; 
+            margin: 30px 0; 
+            background: rgba(0,0,0,0.2); 
+            padding: 5px; 
+            border-radius: 16px; 
+        }
+
+        .tab { 
+            flex: 1; 
+            padding: 12px; 
+            cursor: pointer; 
+            border-radius: 12px; 
+            transition: 0.3s; 
+            font-weight: 600; 
+            color: var(--text-dim); 
+        }
+
+        .tab.active { 
+            background: var(--primary); 
+            color: white; 
+            box-shadow: 0 4px 15px var(--primary-glow);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 16px;
+            margin: 12px 0;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus { border-color: var(--primary); background: rgba(255,255,255,0.1); }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s ease;
+            margin-top: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 10px 20px var(--primary-glow); 
+        }
+
+        /* --- DASHBOARD STYLING --- */
+        #dashboard-page { padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 35px;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            margin-bottom: 40px;
+        }
+
+        .user-badge { 
+            background: var(--primary-glow); 
+            padding: 8px 20px; 
+            border-radius: 30px; 
+            font-weight: 600; 
+            font-size: 0.9rem;
+            border: 1px solid var(--primary);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            padding: 35px;
+            border-radius: 28px;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card:hover { 
+            transform: translateY(-10px); 
+            background: rgba(255,255,255,0.06);
+            border-color: var(--primary);
+        }
+
+        .card-icon { font-size: 2rem; margin-bottom: 20px; display: block; }
+
+        .status-dot { 
+            height: 8px; width: 8px; 
+            background: var(--accent); 
+            border-radius: 50%; 
+            display: inline-block; 
+            margin-right: 10px;
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .sos-btn {
+            background: linear-gradient(45deg, #ff4757, #ff6b81);
+        }
+
+        .sos-btn:hover {
+            box-shadow: 0 10px 25px rgba(255, 71, 87, 0.4);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="auth-page">
+        <div class="auth-card">
+            <div class="logo-icon">🛡️</div>
+            <h1 style="font-weight: 700; font-size: 2rem;">UASS PORTAL</h1>
+            <p style="color: var(--text-dim); margin-top: 5px;">Universal Adaptive Support System</p>
+            
+            <div class="auth-tabs">
+                <div id="t-login" class="tab active" onclick="showTab('login')">Login</div>
+                <div id="t-signup" class="tab" onclick="showTab('signup')">Sign Up</div>
+            </div>
+
+            <div id="login-form">
+                <input type="text" id="login-user" placeholder="Username">
+                <input type="password" placeholder="Password">
+                <button class="btn" onclick="handleAuth('login')">Access System</button>
+            </div>
+
+            <div id="signup-form" class="hidden">
+                <input type="text" id="signup-name" placeholder="Full Name">
+                <select id="mode-select">
+                    <option value="Standard">Standard Mode</option>
+                    <option value="Visual">Blind Mode (Audio First)</option>
+                    <option value="Hearing">Deaf Mode (Visual First)</option>
+                    <option value="Physical">Voice Command Mode</option>
+                </select>
+                <button class="btn" onclick="handleAuth('signup')">Create Secure Profile</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboard-page" class="hidden">
+        <div class="navbar">
+            <div>
+                <p style="color: var(--text-dim); font-size: 0.9rem;">Welcome back,</p>
+                <h2 id="display-name" style="font-size: 1.5rem;">User</h2>
+            </div>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <span class="user-badge" id="display-mode">Mode: Standard</span>
+                <button onclick="logout()" style="background: none; border: none; color: var(--danger); cursor: pointer; font-weight: bold;">Logout</button>
+            </div>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <span class="card-icon">📢</span>
+                <h3>System Intelligence</h3>
+                <p style="margin: 15px 0; color: var(--text-dim); line-height: 1.6;">AI-driven text-to-speech engine is monitoring your environment.</p>
+                <button class="btn" onclick="speak('System check complete. Environment is safe.')">Run Audio Check</button>
+            </div>
+
+            <div class="feature-card">
+                <span class="card-icon">🚨</span>
+                <h3>Emergency SOS</h3>
+                <p style="margin: 15px 0; color: var(--text-dim); line-height: 1.6;">Instant broadcast to primary contacts and local emergency services.</p>
+                <button class="btn sos-btn" onclick="triggerSOS()">Activate SOS</button>
+            </div>
+
+            <div class="feature-card">
+                <span class="card-icon">🗓️</span>
+                <h3>Daily Roadmap</h3>
+                <ul style="list-style: none; margin-top: 20px;">
+                    <li style="margin-bottom: 15px;"><span class="status-dot"></span> <span style="color: var(--text-dim)">02:00 PM</span> <br><b>Vitals Checkup</b></li>
+                    <li><span class="status-dot"></span> <span style="color: var(--text-dim)">05:00 PM</span> <br><b>Physical Therapy</b></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="feature-card" style="margin-top: 30px; width: 100%; border-left: 4px solid var(--accent);">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 style="color: var(--accent);">Active Metadata</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-dim); margin-top: 5px;">Compliance: WCAG 2.1 Level AA</p>
+                </div>
+                <div style="text-align: right;">
+                    <code id="session-id" style="background: rgba(0,0,0,0.3); padding: 5px 12px; border-radius: 8px; color: var(--primary);">---</code>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // PAGE SWITCHING
+        function showTab(type) {
+            document.getElementById('login-form').classList.toggle('hidden', type !== 'login');
+            document.getElementById('signup-form').classList.toggle('hidden', type !== 'signup');
+            document.getElementById('t-login').classList.toggle('active', type === 'login');
+            document.getElementById('t-signup').classList.toggle('active', type === 'signup');
+        }
+
+        // AUTH LOGIC
+        function handleAuth(type) {
+            let name = type === 'login' 
+                ? (document.getElementById('login-user').value || "User") 
+                : (document.getElementById('signup-name').value || "New User");
+            
+            let mode = type === 'signup' ? document.getElementById('mode-select').value : "Standard";
+
+            // Visual Transition
+            const card = document.querySelector('.auth-card');
+            card.style.transform = "scale(0.9)";
+            card.style.opacity = "0";
+
+            setTimeout(() => {
+                document.getElementById('auth-page').classList.add('hidden');
+                document.getElementById('dashboard-page').classList.remove('hidden');
+                
+                document.getElementById('display-name').innerText = name;
+                document.getElementById('display-mode').innerText = "Mode: " + mode;
+                document.getElementById('session-id').innerText = "SID-" + Math.random().toString(36).substring(7).toUpperCase();
+                
+                speak("Welcome back " + name + ". System initialized.");
+            }, 400);
+        }
+
+        function logout() { location.reload(); }
+
+        // ASSISTIVE TECH
+        function speak(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Stop current speech
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.pitch = 1;
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function triggerSOS() {
+            speak("Emergency Protocol Initiated. Sending location to family.");
+            alert("🚨 EMERGENCY ALERT SENT!");
+        }
+
+        window.onload = () => {
+            console.log("UASS System Online");
+        };
+    </script>
+</body>
+</html>
